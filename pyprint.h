@@ -91,15 +91,9 @@ namespace pyprint
         template <typename T, typename... Ts>
         void _print(T const& arg, Ts const&... args)
         {
-            auto p = std::get<sizeof...(args) - 1>(std::tuple<Ts...>(args...));
+            auto const& p = std::get<sizeof...(args) - 1>(std::make_tuple(args...));
 
-            // if constexpr (is_pair_v<T>)
-            // {
-            //     _print(p.first, p.second, p);
-            //     return;
-            // }
-
-            if constexpr (is_iterable_v<T> && !std::is_same_v<T, std::string>)
+            if constexpr (is_iterable_v<T> && !std::is_convertible_v<T, std::string>)
             {
                 p.out << '[';
                 bool first = true;
@@ -134,7 +128,7 @@ namespace pyprint
                 p.out << p.sep;
                 _print(args...);
             }
-            else print(std::get<0>(std::tuple<Ts...>(args...)));
+            else print(std::get<0>(std::make_tuple(args...)));
         }
 
     }
