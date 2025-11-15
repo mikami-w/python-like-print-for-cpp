@@ -46,24 +46,32 @@ namespace pyprint
         template<typename T>
         inline constexpr bool is_iterable_v = is_iterable<T>::value;
 
-        template<typename T, typename = void>
+        template<typename T>
         struct is_pair: std::false_type {};
 
-        template<typename T>
-        struct is_pair<T, std::void_t<
-           decltype(T::first),
-           decltype(T::second)
-       >>: std::true_type {};
+        template<typename T, typename U>
+        struct is_pair<std::pair<T, U>>: std::true_type {};
 
         template<typename T>
         inline constexpr bool is_pair_v = is_pair<T>::value;
+
+        template<typename T>
+        struct is_std_array: std::false_type {};
+
+        template<typename T, size_t N>
+        struct is_std_array<std::array<T, N>>: std::true_type {};
+
+        template<typename T>
+        inline constexpr bool is_std_array_v = is_std_array<T>::value;
 
         template<typename T, typename = void>
         struct is_tuple: std::false_type {};
 
         template<typename T>
         struct is_tuple<T, std::void_t<
-            decltype(std::tuple_size<T>::value)
+            decltype(std::tuple_size<T>::value),
+            std::enable_if_t<!is_std_array_v<T>>,
+            std::enable_if_t<!is_pair_v<T>>
         >>: std::true_type {};
 
         template<typename T>
@@ -91,13 +99,6 @@ namespace pyprint
             //     return;
             // }
 
-            if constexpr (is_pair_v<T> || is_tuple_v<T>)
-            {
-                p.out << '(';
-                std::apply([&p](auto const&& obj) ->void { _print(obj, p); }, arg);
-                p.out << ')';
-            }
-            else
             if constexpr (is_iterable_v<T> && !std::is_same_v<T, std::string>)
             {
                 p.out << '[';
@@ -112,6 +113,13 @@ namespace pyprint
                     p.out << item;
                 }
                 p.out << ']';
+            }
+            else
+            if constexpr (is_pair_v<T> || is_tuple_v<T>)
+            {
+                p.out << '(';
+                std::apply([&p](auto const&& obj) ->void { _print(obj, p); }, arg);
+                p.out << ')';
             }
             else
             if constexpr (is_plain_printable_v<T>)
