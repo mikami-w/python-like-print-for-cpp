@@ -118,6 +118,7 @@ namespace pyprint
             {
                 p.out << arg;
             }
+            else static_assert(false, "Object is not printable.");
 
             // Print separator or end
             if constexpr (sizeof...(args) > 1)
