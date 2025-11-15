@@ -7,6 +7,8 @@
 
 #include <bitset>
 #include <iostream>
+#include <queue>
+#include <stack>
 #include <tuple>
 
 
@@ -22,6 +24,7 @@ namespace pyprint
 
     namespace traits
     {
+        // Check if T can be printed directly to ostream
         template<typename T, typename = void>
         struct is_plain_printable: std::false_type {};
 
@@ -33,6 +36,7 @@ namespace pyprint
         template<typename T>
         inline constexpr bool is_plain_printable_v = is_plain_printable<T>::value;
 
+        // Check if T is iterable (has begin() and end())
         template<typename T, typename = void>
         struct is_iterable: std::false_type {};
 
@@ -47,6 +51,7 @@ namespace pyprint
         template<typename T>
         inline constexpr bool is_iterable_v = is_iterable<T>::value;
 
+        // Check if T is std::pair
         template<typename T>
         struct is_pair: std::false_type {};
 
@@ -56,6 +61,7 @@ namespace pyprint
         template<typename T>
         inline constexpr bool is_pair_v = is_pair<T>::value;
 
+        // Check if T is std::array
         template<typename T>
         struct is_std_array: std::false_type {};
 
@@ -65,6 +71,7 @@ namespace pyprint
         template<typename T>
         inline constexpr bool is_std_array_v = is_std_array<T>::value;
 
+        // Check if T is std::tuple (excluding std::pair and std::array)
         template<typename T, typename = void>
         struct is_tuple: std::false_type {};
 
@@ -78,6 +85,7 @@ namespace pyprint
         template<typename T>
         inline constexpr bool is_tuple_v = is_tuple<T>::value;
 
+        // Check if T is std::bitset
         template<typename T>
         struct is_bitset: std::false_type {};
 
@@ -86,6 +94,22 @@ namespace pyprint
 
         template<typename T>
         inline constexpr bool is_bitset_v = is_bitset<T>::value;
+
+        // Check if T is a container adapter (stack, queue, priority_queue)
+        template <typename T>
+        struct is_container_adapter : std::false_type {};
+
+        template <typename T, typename Container>
+        struct is_container_adapter<std::stack<T, Container>> : std::true_type {};
+
+        template <typename T, typename Container>
+        struct is_container_adapter<std::queue<T, Container>> : std::true_type {};
+
+        template <typename T, typename Container, typename Compare>
+        struct is_container_adapter<std::priority_queue<T, Container, Compare>> : std::true_type {};
+
+        template <typename T>
+        inline constexpr bool is_container_adapter_v = is_container_adapter<T>::value;
     }
 
     inline void print(params const& p = {})
@@ -130,6 +154,24 @@ namespace pyprint
             if constexpr (is_bitset_v<T>)
             {
                 p.out << arg.to_string();
+            }
+            else // Container adapters
+            if constexpr (is_container_adapter_v<T>)
+            {
+                T copy = arg; // Make a copy to preserve the original
+                p.out << '[';
+                bool first = true;
+                while (!copy.empty())
+                {
+                    if (!first)
+                    {
+                        p.out << p.sep;
+                    }
+                    first = false;
+                    p.out << copy.top();
+                    copy.pop();
+                }
+                p.out << ']';
             }
             else // Plain printable
             if constexpr (is_plain_printable_v<T>)
