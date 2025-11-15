@@ -96,20 +96,30 @@ namespace pyprint
         inline constexpr bool is_bitset_v = is_bitset<T>::value;
 
         // Check if T is a container adapter (stack, queue, priority_queue)
-        template <typename T>
+        template<typename T>
         struct is_container_adapter : std::false_type {};
 
-        template <typename T, typename Container>
+        template<typename T, typename Container>
         struct is_container_adapter<std::stack<T, Container>> : std::true_type {};
 
-        template <typename T, typename Container>
+        template<typename T, typename Container>
         struct is_container_adapter<std::queue<T, Container>> : std::true_type {};
 
-        template <typename T, typename Container, typename Compare>
+        template<typename T, typename Container, typename Compare>
         struct is_container_adapter<std::priority_queue<T, Container, Compare>> : std::true_type {};
 
-        template <typename T>
+        template<typename T>
         inline constexpr bool is_container_adapter_v = is_container_adapter<T>::value;
+
+        // Check if T is std::queue
+        template<typename T>
+        struct is_std_queue: std::false_type {};
+
+        template<typename T, typename Container>
+        struct is_std_queue<std::queue<T, Container>>: std::true_type {};
+
+        template<typename T>
+        inline constexpr bool is_std_queue_v = is_std_queue<T>::value;
     }
 
     inline void print(params const& p = {})
@@ -168,7 +178,14 @@ namespace pyprint
                         _print(p.sep, p);
                     }
                     first = false;
-                    p.out << copy.top();
+                    if constexpr (is_std_queue_v<T>)
+                    { // Queue uses front()
+                        _print(copy.front(), p);
+                    }
+                    else
+                    { // Stack and priority_queue use top()
+                        _print(copy.top(), p);
+                    }
                     copy.pop();
                 }
                 p.out << ']';
@@ -181,12 +198,17 @@ namespace pyprint
             else static_assert(false, "Object is not printable.");
 
             // Print separator or end
-            if constexpr (sizeof...(args) > 1)
+            if constexpr (sizeof...(args) > 1) // NOLINT(*-misleading-indentation)
             {
                 _print(p.sep, p);
                 _print(args...);
             }
-            else print(std::get<0>(std::make_tuple(args...)));
+            else
+            {
+                static_assert(std::is_same_v<std::tuple_element_t<0, std::tuple<Ts...>>, params>,
+                    "Last argument must be params, but it is not. Why?");
+                print(std::get<0>(std::make_tuple(args...)));
+            }
         }
 
     }
