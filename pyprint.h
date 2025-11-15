@@ -139,7 +139,7 @@ namespace pyprint
                         p.out << p.sep;
                     }
                     first = false;
-                    p.out << item;
+                    _print(item, p);
                 }
                 p.out << ']';
             }
@@ -165,7 +165,7 @@ namespace pyprint
                 {
                     if (!first)
                     {
-                        p.out << p.sep;
+                        _print(p.sep, p);
                     }
                     first = false;
                     p.out << copy.top();
@@ -173,7 +173,7 @@ namespace pyprint
                 }
                 p.out << ']';
             }
-            else // Plain printable
+            else // Plain printable, the recursion ends here
             if constexpr (is_plain_printable_v<T>)
             {
                 p.out << arg;
@@ -183,7 +183,7 @@ namespace pyprint
             // Print separator or end
             if constexpr (sizeof...(args) > 1)
             {
-                p.out << p.sep;
+                _print(p.sep, p);
                 _print(args...);
             }
             else print(std::get<0>(std::make_tuple(args...)));
