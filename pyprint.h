@@ -5,6 +5,7 @@
 #ifndef PYPRINT_PYPRINT_H
 #define PYPRINT_PYPRINT_H
 
+#include <bitset>
 #include <iostream>
 #include <tuple>
 
@@ -76,6 +77,15 @@ namespace pyprint
 
         template<typename T>
         inline constexpr bool is_tuple_v = is_tuple<T>::value;
+
+        template<typename T>
+        struct is_bitset: std::false_type {};
+
+        template<size_t N>
+        struct is_bitset<std::bitset<N>>: std::true_type {};
+
+        template<typename T>
+        inline constexpr bool is_bitset_v = is_bitset<T>::value;
     }
 
     inline void print(params const& p = {})
@@ -93,6 +103,7 @@ namespace pyprint
         {
             auto const& p = std::get<sizeof...(args) - 1>(std::make_tuple(args...));
 
+            // Iterables except string
             if constexpr (is_iterable_v<T> && !std::is_convertible_v<T, std::string>)
             {
                 p.out << '[';
@@ -108,14 +119,19 @@ namespace pyprint
                 }
                 p.out << ']';
             }
-            else
+            else // Pair and tuple
             if constexpr (is_pair_v<T> || is_tuple_v<T>)
             {
                 p.out << '(';
                 std::apply([&p](auto const&& obj) ->void { _print(obj, p); }, arg);
                 p.out << ')';
             }
-            else
+            else // Bitset
+            if constexpr (is_bitset_v<T>)
+            {
+                p.out << arg.to_string();
+            }
+            else // Plain printable
             if constexpr (is_plain_printable_v<T>)
             {
                 p.out << arg;
