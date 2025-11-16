@@ -146,18 +146,38 @@ namespace pyprint
                 {
                     if (!first)
                     {
-                        p.out << p.sep;
+                        p.out << ",";
                     }
                     first = false;
                     _print(item, p);
                 }
                 p.out << ']';
             }
-            else // Pair and tuple
-            if constexpr (is_pair_v<T> || is_tuple_v<T>)
+            else // Pair
+            if constexpr (is_pair_v<T>)
             {
                 p.out << '(';
-                std::apply([&p](auto const&& obj) ->void { _print(obj, p); }, arg);
+                _print(arg.first, arg.second, params{.sep=",", .end="", .out=p.out, .flush=false});
+                p.out << ')';
+            }
+            else // Tuple
+            if constexpr (is_tuple_v<T>)
+            {
+                p.out << '(';
+                std::apply(
+                    [&](auto const&... elems)
+                    {
+                        bool first = true;
+                        ([&](auto const& elem)
+                         {
+                            if (!first)
+                            {
+                                p.out << ',';
+                            }
+                            _print(elem, p);
+                            first = false;
+                         }(elems), ...);
+                    }, arg);
                 p.out << ')';
             }
             else // Bitset
@@ -175,7 +195,7 @@ namespace pyprint
                 {
                     if (!first)
                     {
-                        _print(p.sep, p);
+                        p.out << ',';
                     }
                     first = false;
                     if constexpr (is_std_queue_v<T>)
@@ -207,7 +227,7 @@ namespace pyprint
             {
                 static_assert(std::is_same_v<std::tuple_element_t<0, std::tuple<Ts...>>, params>,
                     "Last argument must be params, but it is not. Why?");
-                print(std::get<0>(std::make_tuple(args...)));
+                // print(std::get<0>(std::make_tuple(args...)));
             }
         }
 
@@ -222,10 +242,19 @@ namespace pyprint
             if constexpr (std::is_same_v<std::tuple_element_t<sizeof...(args) - 1, std::tuple<Ts...>>, params>)
             {
                 details::_print(arg, args...);
+                print(std::get<sizeof...(args) - 1>(std::make_tuple(args...)));
             }
-            else details::_print(arg, args..., params());
+            else
+            {
+                details::_print(arg, args..., params{});
+                print();
+            }
         }
-        else details::_print(arg, params());
+        else
+        {
+            details::_print(arg, params{});
+            print();
+        }
     }
 
 }
