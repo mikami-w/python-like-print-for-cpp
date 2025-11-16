@@ -11,6 +11,9 @@
     - 打印标准类型 (例如 `int`, `double`, `const char*`, `std::string`)。
     - 以 `[item1,item2,...]` 格式打印可迭代容器或容器适配器 (例如 `std::vector`, `std::list`, `std::array`, `std::queue`)（逗号分隔，无空格）。
     - 以 `(item1,item2,...)` 格式打印 `std::pair` 和 `std::tuple`（逗号分隔，无空格）。
+    - 以二进制格式打印 `std::bitset`。
+- **自定义打印格式:**
+    - 在不造成函数重定义的前提下, 为任意类型重载 `operator<<(std::ostream&, Type)` 以实现自定义打印格式 (可覆盖已有的打印格式)。
 - **C++ 17:** 需要支持 C++17 的编译器 (使用了 `if constexpr`, `std::void_t` 等特性)。
 
 ## 如何使用

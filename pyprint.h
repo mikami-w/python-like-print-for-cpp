@@ -137,7 +137,12 @@ namespace pyprint
         {
             auto const& p = std::get<sizeof...(args) - 1>(std::make_tuple(args...));
 
-            // Iterables except string
+            // Plain printable, the recursion ends here
+            if constexpr (is_plain_printable_v<T>)
+            {
+                p.out << arg;
+            }
+            else // Iterables except string
             if constexpr (is_iterable_v<T> && !std::is_convertible_v<T, std::string>)
             {
                 p.out << '[';
@@ -209,11 +214,6 @@ namespace pyprint
                     copy.pop();
                 }
                 p.out << ']';
-            }
-            else // Plain printable, the recursion ends here
-            if constexpr (is_plain_printable_v<T>)
-            {
-                p.out << arg;
             }
             else static_assert(false, "Object is not printable.");
 

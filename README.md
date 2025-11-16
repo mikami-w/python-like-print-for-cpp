@@ -11,6 +11,9 @@ A C++17 single-header library that provides a `print()` function similar to Pyth
     - Prints standard types (e.g., `int`, `double`, `const char*`, `std::string`).
     - Prints iterable containers or container adaptors (e.g., `std::vector`, `std::list`, `std::array`, `std::queue`) in a `[item1,item2,...]` format (comma-separated, no spaces).
     - Prints `std::pair` and `std::tuple` in a `(item1,item2,...)` format (comma-separated, no spaces).
+    - Prints `std::bitset` in its binary format.
+- **Custom Print Formatting:**
+  - Without causing a function redefinition, overload `operator<<(std::ostream&, Type)` for any type to implement a custom print format (this can override existing formats).
 - **C++ 17:** Requires a C++17 compatible compiler (uses `if constexpr`, `std::void_t`, etc.).
 
 ## How to Use
