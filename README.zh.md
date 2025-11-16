@@ -9,22 +9,21 @@
 - **自定义参数:** 支持 `sep` (分隔符), `end` (行尾) 和 `out` (输出流) 参数，模仿 Python 的 `print` 函数。
 - **自动格式化:**
     - 打印标准类型 (例如 `int`, `double`, `const char*`, `std::string`)。
-    - 以 `[item1, item2, ...]` 格式打印可迭代容器 (例如 `std::vector`, `std::list`, `std::array`)。
-    - 以 `(item1, item2, ...)` 格式打印 `std::pair` 和 `std::tuple`。
+    - 以 `[item1,item2,...]` 格式打印可迭代容器或容器适配器 (例如 `std::vector`, `std::list`, `std::array`, `std::queue`)（逗号分隔，无空格）。
+    - 以 `(item1,item2,...)` 格式打印 `std::pair` 和 `std::tuple`（逗号分隔，无空格）。
 - **C++ 17:** 需要支持 C++17 的编译器 (使用了 `if constexpr`, `std::void_t` 等特性)。
 
 ## 如何使用
 
 1. 下载 `pyprint.h`。
 2. 在你的项目中包含它: `#include "pyprint.h"`
-3. 使用 C++17 标准进行编译 (例如 `g++ -std=c++17 main.cpp`)。
-4. 通过 `pyprint::print(...)` 调用该函数。
+3. 通过 `pyprint::print(...)` 调用该函数。
 
 ## 使用示例
 
 要使用自定义参数 (`sep`, `end`, `out`)，请将一个 `pyprint::params` 结构体作为**最后一个参数**传递。
 
-```
+```c++
 #include "pyprint.h"
 #include <vector>
 #include <string>
@@ -51,22 +50,22 @@ int main() {
     // 4. 打印 vector
     std::vector<int> v = {10, 20, 30};
     print("我的 vector:", v);
-    // 输出: 我的 vector: [10, 20, 30]
+    // 输出: 我的 vector: [10,20,30]
 
     // 5. 打印 pair
     std::pair<std::string, int> p = {"测试", 123};
     print("我的 pair:", p);
-    // 输出: 我的 pair: (测试, 123)
+    // 输出: 我的 pair: (测试,123)
 
     // 6. 打印 tuple
     auto t = std::make_tuple(1, 'a', 3.14, "tuple!");
     print("我的 tuple:", t);
-    // 输出: 我的 tuple: (1, a, 3.14, tuple!)
+    // 输出: 我的 tuple: (1,a,3.14,tuple!)
 
     // 7. 打印 map (它是一个可迭代的 pair 容器)
     std::map<std::string, int> m = {{"one", 1}, {"two", 2}};
     print("我的 map:", m);
-    // 输出: 我的 map: [(one, 1), (two, 2)]
+    // 输出: 我的 map: [(one,1),(two,2)]
 
     // 8. 重定向输出到 stringstream (out)
     std::stringstream ss;
@@ -77,7 +76,7 @@ int main() {
 
     // 9. 组合使用参数
     print("Vector", v, "和 Tuple", t, params{.sep = " | ", .end = "\n---\n"});
-    // 输出: Vector | [10, 20, 30] | 和 Tuple | (1, a, 3.14, tuple!)
+    // 输出: Vector | [10,20,30] | 和 Tuple | (1,a,3.14,tuple!)
     // ---
 
     return 0;
