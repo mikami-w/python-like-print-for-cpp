@@ -1,3 +1,7 @@
+**[English](./README.md)** | **[简体中文](./README.zh.md)**
+
+---
+
 # Python-like print for C++ 17
 
 A C++17 single-header library that provides a `print()` function similar to Python's, with support for multiple arguments, custom separators, and automatic formatting for containers.
