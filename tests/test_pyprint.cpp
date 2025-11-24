@@ -355,14 +355,14 @@ int main() {
     test_list();
     test_set();
     test_map();
-    // test_deque(); // !Segmentation fault
+    test_deque();
     test_array();
     test_pair();
     test_tuple();
     test_bitset();
-    test_stack(); // !Segmentation fault
-    // test_queue(); // !Segmentation fault
-    // test_priority_queue(); // !Segmentation fault
+    test_stack();
+    test_queue();
+    test_priority_queue();
     test_nested_structures();
     test_empty_print();
     test_container_custom_separator();

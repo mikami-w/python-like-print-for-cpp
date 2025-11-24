@@ -130,12 +130,13 @@ namespace pyprint
     namespace details
     {
         using namespace traits;
-        // Ensure that params is passed as the last argument
+        // Ensured that params is passed as the last argument
 
         template <typename T, typename... Ts>
         void _print(T const& arg, Ts const&... args)
         {
-            auto const& p = std::get<sizeof...(args) - 1>(std::make_tuple(args...));
+            auto args_ref = std::forward_as_tuple(args...);
+            auto const& p = std::get<sizeof...(args) - 1>(args_ref);
 
             // Plain printable, the recursion ends here
             if constexpr (is_plain_printable_v<T>)
