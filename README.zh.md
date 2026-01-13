@@ -8,7 +8,7 @@
 
 ## 特性
 
-- **单头文件:** 只需包含 `pyprint.h` 即可使用。
+- **单头文件:** 只需包含 `pyprint.hpp` 即可使用。
 - **可变参数:** 可以像 Python 一样向 `print()` 传递任意数量的参数。
 - **自定义参数:** 支持 `sep` (分隔符), `end` (行尾) 和 `out` (输出流) 参数，模仿 Python 的 `print` 函数。
 - **自动格式化:**
@@ -22,8 +22,8 @@
 
 ## 如何使用
 
-1. 下载 `pyprint.h`。
-2. 在你的项目中包含它: `#include "pyprint.h"`
+1. 下载 `pyprint.hpp`。
+2. 在你的项目中包含它: `#include "pyprint.hpp"`
 3. 通过 `pyprint::print(...)` 调用该函数。
 
 ## 使用示例
@@ -31,7 +31,7 @@
 要使用自定义参数 (`sep`, `end`, `out`)，请将一个 `pyprint::params` 结构体作为**最后一个参数**传递。
 
 ```c++
-#include "pyprint.h"
+#include "pyprint.hpp"
 #include <vector>
 #include <string>
 #include <map>

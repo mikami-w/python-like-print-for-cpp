@@ -8,7 +8,7 @@ A C++17 single-header library that provides a `print()` function similar to Pyth
 
 ## Features
 
-- **Single Header:** Just include `pyprint.h` and you're ready to go.
+- **Single Header:** Just include `pyprint.hpp` and you're ready to go.
 - **Variadic Arguments:** Pass any number of arguments to `print()`, just like in Python.
 - **Custom Parameters:** Supports `sep` (separator), `end` (end of line), and `out` (output stream) parameters, mimicking Python's `print` function.
 - **Automatic Formatting:**
@@ -22,8 +22,8 @@ A C++17 single-header library that provides a `print()` function similar to Pyth
 
 ## How to Use
 
-1. Download `pyprint.h`.
-2. Include it in your project: `#include "pyprint.h"`
+1. Download `pyprint.hpp`.
+2. Include it in your project: `#include "pyprint.hpp"`
 3. Call the function using `pyprint::print(...)`.
 
 ## Usage Examples
@@ -31,7 +31,7 @@ A C++17 single-header library that provides a `print()` function similar to Pyth
 To use custom parameters (`sep`, `end`, `out`), pass a `pyprint::params` struct as the **last argument**.
 
 ```c++
-#include "pyprint.h"
+#include "pyprint.hpp"
 #include <vector>
 #include <string>
 #include <map>
