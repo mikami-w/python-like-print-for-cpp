@@ -7,7 +7,6 @@
 #include <stack>
 #include <tuple>
 
-
 namespace pyprint
 {
     struct params
@@ -20,6 +19,9 @@ namespace pyprint
 
     namespace traits
     {
+        template<typename>
+        struct always_false: std::false_type {};
+
         // Check if T can be printed directly to ostream
         template<typename T, typename = void>
         struct is_plain_printable: std::false_type {};
@@ -212,7 +214,7 @@ namespace pyprint
                 }
                 p.out << ']';
             }
-            else static_assert(false, "Object is not printable.");
+            else static_assert(always_false<T>::value, "Object is not printable.");
 
             // Print separator or end
             if constexpr (sizeof...(args) > 1) // NOLINT(*-misleading-indentation)
