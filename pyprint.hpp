@@ -229,7 +229,7 @@ namespace pyprint
             else
             {
                 static_assert(std::is_same_v<std::tuple_element_t<0, std::tuple<Ts...>>, params>,
-                    "Last argument must be params, but it is not. Why?");
+                    "Last argument must have been params, but it is not. Why?");
                 // print(std::get<0>(std::make_tuple(args...)));
             }
         }
