@@ -1,8 +1,4 @@
-//
-// Created on 2025/11/15.
-//
-
-#include "../pyprint.h"
+#include "../pyprint.hpp"
 #include <sstream>
 #include <vector>
 #include <list>
@@ -366,6 +362,7 @@ int main() {
     test_nested_structures();
     test_empty_print();
     test_container_custom_separator();
+    test_string_view();
 
     std::cout << "\n========================================\n";
     std::cout << "Test Summary:\n";

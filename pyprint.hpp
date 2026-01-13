@@ -1,9 +1,5 @@
-//
-// Created on 2025/11/15.
-//
-
-#ifndef PYPRINT_PYPRINT_H
-#define PYPRINT_PYPRINT_H
+#ifndef PYPRINT_PYPRINT_HPP
+#define PYPRINT_PYPRINT_HPP
 
 #include <bitset>
 #include <iostream>
@@ -260,4 +256,4 @@ namespace pyprint
 
 }
 
-#endif //PYPRINT_PYPRINT_H
+#endif //PYPRINT_PYPRINT_HPP
