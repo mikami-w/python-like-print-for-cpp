@@ -123,6 +123,10 @@ namespace pyprint
     inline void print(params const& p = {})
     {
         p.out << p.end;
+        if (p.flush)
+        {
+            p.out.flush();
+        }
     }
 
     namespace details
