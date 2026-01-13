@@ -245,7 +245,7 @@ namespace pyprint
             if constexpr (std::is_same_v<std::tuple_element_t<sizeof...(args) - 1, std::tuple<Ts...>>, params>)
             {
                 details::_print(arg, args...);
-                print(std::get<sizeof...(args) - 1>(std::make_tuple(args...)));
+                print(std::get<sizeof...(args) - 1>(std::forward_as_tuple(args...)));
             }
             else
             {
