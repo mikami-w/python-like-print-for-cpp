@@ -340,6 +340,17 @@ void test_container_custom_separator() {
     std::cout << "Container custom separator tests passed\n";
 }
 
+void test_string_view()
+{
+    std::string_view sv("hello world");
+    std::string result = capture_output([&sv](std::ostream& os) {
+        print(sv, params{.sep=" ", .end="\n", .out=os, .flush=false});
+    });
+    check_result(result, "hello world\n", "string_view");
+
+    std::cout << "String view tests passed\n";
+}
+
 int main() {
     std::cout << "Running pyprint tests...\n\n";
 
